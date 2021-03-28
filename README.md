@@ -43,7 +43,7 @@
 ---
 ### 執行結果
 * `TCP`：
-    ![](https://i.imgur.com/dJ6SkbC.png)
+    ![](https://i.imgur.com/xoPDN7Q.png)
     * 左方為`server`端，右方為`client`端。
     * 紀錄訊息包含：
         * 每傳遞（接收）`25%`即顯示時間紀錄。
@@ -52,7 +52,7 @@
     * 接收端的檔名為：`receive_tcp.txt`。
     * **由於使用`TCP`作為傳輸的協定，因此傳送端與接收端的檔案大小一致（代表沒有任何封包丟失）。**
 * `UDP`：
-    ![](https://i.imgur.com/pVWuacC.png)
+    ![](https://i.imgur.com/kuZkKOH.png)
     * 左方為`server`端，右方為`client`端。
     * 紀錄訊息包含：
         * 每傳遞（接收）`25%`即顯示時間紀錄。
@@ -62,4 +62,5 @@
     * 接收端的檔名為：`receive_udp.txt`。
     * **因為封包有丟失，所以接收端最後一筆記錄並非`100%`，而是會`<100%`。**
     * **由於使用`UDP`作為傳輸的協定，因此在傳遞的過程會有封包丟失，所以接收端（`server`）收到的檔案大小少於傳送端（`client`）所送出的檔案。**
+
 
