@@ -128,7 +128,7 @@ void client_tcp(char *hostIP , int port, char*filename){
 	}
     fclose(fp);
     
-    printf("total trans time : %f ms\n",difftime(end_time,start_time)/1000000);
+    printf("total trans time : %f s\n",difftime(end_time,start_time)/1000000);
     printf("file size : %d %s\n", getFileSize(getFileType(filesize),filesize), getFileType(filesize));
     
     close(sockfd);
@@ -208,7 +208,7 @@ void server_tcp(int port){
 	}
     fclose(fp);
 
-    printf("total trans time : %f ms\n",difftime(end_time,start_time)/1000000);
+    printf("total trans time : %f s\n",difftime(end_time,start_time)/1000000);
     printf("file size : %d %s\n", getFileSize(getFileType(filesize),filesize), getFileType(filesize));
 
     close(newsockfd);
@@ -297,7 +297,7 @@ void client_udp(char *hostIP , int port, char*filename){
             break;
         }
     }
-    printf("total trans time : %f ms\n",difftime(end_time,start_time)/1000000);
+    printf("total trans time : %f s\n",difftime(end_time,start_time)/1000000);
     printf("file size : %d %s\n", getFileSize(getFileType(filesize),filesize), getFileType(filesize));
     if(gotsize != -1){
         printf("packet loss rate : %f %%\n",((double)(filesize - gotsize) / (double)filesize)*100);
@@ -393,7 +393,7 @@ void server_udp(int port){
     }
     fclose(fp);
 
-    printf("total trans time : %f ms\n",difftime(end_time,start_time)/1000000);
+    printf("total trans time : %f s\n",difftime(end_time,start_time)/1000000);
     printf("file size : %d %s\n", getFileSize(getFileType(receivebytes),receivebytes), getFileType(receivebytes));
     printf("packet loss rate : %f %%\n",((double)(filesize - receivebytes) / (double)filesize)*100);
 
