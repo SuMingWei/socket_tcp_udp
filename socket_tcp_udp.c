@@ -284,6 +284,8 @@ void client_udp(char *hostIP , int port, char*filename){
     //sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
     while(1){
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         int f = recvfrom(sock, &gotsize, sizeof(gotsize), 0, NULL, NULL);
         if(f>0){
             break;
@@ -353,7 +355,8 @@ void server_udp(int port){
                 printf("<100%% %s",ctime(&cur_time));
             }
             sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
-            //sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
+            sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
+            sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
             break;    
         }
         numbytes = fwrite(buffer, sizeof(char), numbytes, fp);
