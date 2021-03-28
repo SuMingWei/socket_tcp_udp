@@ -98,6 +98,7 @@ void client_tcp(char *hostIP , int port, char*filename){
     time(&cur_time);
     start_time = clock();
     printf("%d%% %s",process,ctime(&cur_time));
+    // 讀檔後傳送
 	while(!feof(fp)){
 		numbytes = fread(buffer, sizeof(char), sizeof(buffer), fp);
         numbytes = write(sockfd, buffer, numbytes);
@@ -175,6 +176,7 @@ void server_tcp(int port){
     time(&cur_time);
     start_time = clock();
     printf("%d%% %s",process,ctime(&cur_time));
+    // 接收檔案，直到收到的檔案為0bytes
 	while(1){
 		numbytes = read(newsockfd, buffer, sizeof(buffer));
 		if(numbytes == 0){
@@ -250,6 +252,7 @@ void client_udp(char *hostIP , int port, char*filename){
     time(&cur_time);
     start_time = clock();
     printf("%d%% %s",process,ctime(&cur_time));
+    // 讀檔後傳送
     while (!feof(fp)){
         numbytes = fread(buffer, sizeof(char), sizeof(buffer), fp);
         sendto(sock, buffer,numbytes,0,(struct sockaddr *)&servaddr, sizeof(servaddr));
@@ -281,8 +284,9 @@ void client_udp(char *hostIP , int port, char*filename){
     // tell end
     char endbuf[3] = {'e','n','d'};
     long gotsize = -1;
-    //sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+
     while(1){
+        // 多送幾次，確保server收得到
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
@@ -345,6 +349,7 @@ void server_udp(int port){
     time(&cur_time);
     start_time = clock();
     printf("%d%% %s",process,ctime(&cur_time));
+    // 一直接收，直到收到end的訊息
     while (1){
         peerlen = sizeof(peeraddr);
         memset(buffer, 0, sizeof(buffer)); // buffer 歸0
@@ -356,6 +361,7 @@ void server_udp(int port){
                 end_time = clock();
                 printf("<100%% %s",ctime(&cur_time));
             }
+            // 傳送多次，確保client收得到
             sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
             sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
             sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
