@@ -7,7 +7,7 @@
 * 傳送的檔案大小須大於`200 MB`。
 * 程式碼需附上註解。
 * 記錄傳送資訊。
-
+---
 ### 開發環境
 * OS：Ubuntu 20.04.1 LTS (虛擬機)
 * CPU：Intel® Core™ i5-1030NG7 CPU @ 1.10GHz × 4
@@ -29,7 +29,7 @@
     ```
     ```bash=
     # for server
-    ./socket_tcp_udp tcp send <ip> <port>
+    ./socket_tcp_udp tcp recv <ip> <port>
     ```
     * `UDP`：
     ```bash=
@@ -38,7 +38,7 @@
     ```
     ```bash=
     # for server
-    ./socket_tcp_udp udp send <ip> <port>
+    ./socket_tcp_udp udp recv <ip> <port>
     ```
 ---
 ### 執行結果
