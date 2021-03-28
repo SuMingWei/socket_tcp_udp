@@ -286,6 +286,8 @@ void client_udp(char *hostIP , int port, char*filename){
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
         int f = recvfrom(sock, &gotsize, sizeof(gotsize), 0, NULL, NULL);
         if(f>0){
             break;
