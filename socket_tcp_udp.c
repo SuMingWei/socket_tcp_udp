@@ -234,14 +234,18 @@ void client_udp(char *hostIP , int port, char*filename){
     struct stat st;
     stat(filename,&st);
     long filesize = st.st_size, recvsize;
+
     // confrim that server has got the filesize
     while(1){
-        sendto(sock, &filesize, sizeof(filesize), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        int f = recvfrom(sock, &recvsize, sizeof(&recvsize), 0, NULL, NULL);
-        if(filesize == recvsize){
+        if(sendto(sock, &filesize, sizeof(filesize), 0, (struct sockaddr *)&servaddr, sizeof(servaddr)) > -1){
             break;
         }
+        // int f = recvfrom(sock, &recvsize, sizeof(&recvsize), 0, NULL, NULL);
+        // if(filesize == recvsize){
+        //     break;
+        // }
     }
+
     // Sending file
     FILE *fp = fopen(filename,"rb");
     int process = 0;
@@ -281,22 +285,21 @@ void client_udp(char *hostIP , int port, char*filename){
         }
     }
     fclose(fp);
-    // tell end
+    // send end message
     char endbuf[3] = {'e','n','d'};
     long gotsize = -1;
-
     while(1){
-        // 多送幾次，確保server收得到
-        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-        int f = recvfrom(sock, &gotsize, sizeof(gotsize), 0, NULL, NULL);
-        if(f>0){
+        if(sendto(sock, endbuf, sizeof(endbuf), 0, (struct sockaddr *)&servaddr, sizeof(servaddr)) > -1){
             break;
         }
     }
+    // receive receivebytes
+    while(1){
+        if(recvfrom(sock, &gotsize, sizeof(gotsize), 0, NULL, NULL) > 0){
+            break;
+        }
+    }
+
     printf("total trans time : %f s\n",difftime(end_time,start_time)/1000000);
     printf("file size : %d %s\n", getFileSize(getFileType(filesize),filesize), getFileType(filesize));
     if(gotsize != -1){
@@ -330,15 +333,13 @@ void server_udp(int port){
 
     // Receive file size
     long filesize;
-    int recv_flag = 0;
     peerlen = sizeof(peeraddr);
     while(1){
-        recv_flag = recvfrom(sock, &filesize, sizeof(filesize), 0,(struct sockaddr *)&peeraddr, &peerlen);
-        if(recv_flag != 0){
-            sendto(sock, &filesize ,recv_flag, 0,(struct sockaddr *)&peeraddr, peerlen);
+        if(recvfrom(sock, &filesize, sizeof(filesize), 0,(struct sockaddr *)&peeraddr, &peerlen) > -1){
             break;
         }
     }
+
     // Receive file
     FILE *fp = fopen("receive_udp.txt","wb");
     long numbytes, receivebytes = 0;
@@ -362,11 +363,14 @@ void server_udp(int port){
                 printf("<100%% %s",ctime(&cur_time));
             }
             // 傳送多次，確保client收得到
-            sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
-            sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
-            sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen);
-            break;    
+            while(1){
+                if(sendto(sock, &receivebytes ,sizeof(receivebytes), 0,(struct sockaddr *)&peeraddr, peerlen)>-1){
+                    break;
+                }
+            }
+            break;
         }
+        
         numbytes = fwrite(buffer, sizeof(char), numbytes, fp);
         receivebytes += numbytes;
         if(((double)receivebytes / (double)filesize) >= 0.25 && process == 0){
